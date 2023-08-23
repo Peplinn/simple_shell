@@ -20,9 +20,7 @@ pid_t pid;
 while (1)
 {
 if (isatty(fd))
-{
-PROMPT;
-}
+write(1, "$ ", 2);
 chars_printed = getline(&buff, &size, stdin);
 if (input_edge(chars_printed, buff))
 continue;

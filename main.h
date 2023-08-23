@@ -12,13 +12,7 @@
 
 int _putchar(char c);
 
-#define PROMPT \
-do {
-_putchar('$');
-_putchar(' ')
-} while (1);
 
- /* Replace this with putchar */
 #define UNUSED __attribute__((unused))
 /* Main Functions */
 int child_process(char **argv, int pid);
