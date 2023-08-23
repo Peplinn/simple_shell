@@ -27,5 +27,5 @@ break;
 }
 }
 }
-return (sign * res);
+return (sign *res);
 }

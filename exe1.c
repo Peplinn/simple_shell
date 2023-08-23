@@ -1,58 +1,54 @@
-#include "main2.h"
-
-/**
-* execmd - Executes the command passed
-* @argv: Array containing tokenized string (command)
-* Return: Nothing
-*/
-
-void execmd(char **argv){
-    char *command = NULL;
-
-    if (argv){
-        command = argv[0];
-        if (execve(command, argv, NULL) == -1){
-            perror("Error:");
-        }
-    }
-}
+#include "main.h"
 
 /**
 * child_process - Creates child process
 * @argv: Array containing tokenized string (command)
+* @pid: PID of the process
+* Return: Status
+* ELSE, 0 if FAILURE
+*/
+
+int child_process(char **argv, int pid)
+{
+int status;
+if (pid == 0)
+{
+if (execve(argv[0], argv, NULL) == -1)
+perror("error in new_process: child process");
+return (status);
+}
+else if (pid < 0)
+{
+perror("fork error");
+exit(EXIT_FAILURE);
+}
+else
+{
+waitpid(pid, &status, 0);
+
+if (WIFEXITED(status))
+return (status);
+else
+{
+printf("3.5");
+perror("child process terminated abnormally");
+return (-1);
+}
+}
+return (-1);
+}
+
+/**
+* freer - Frees entities
+* @argv: Token array
+* @buff: String Buffer
+* @buff_cpy: Buffer copy
 * Return: Nothing
 */
 
-int child_process(char **argv){
-    int status;
-    pid_t pid = fork();
-    if (pid == 0) {
-        /* printf("pid 0\n"); */
-        if (execve(argv[0], argv, NULL) == -1)
-        {
-            perror("error in new_process: child process");
-        }
-        exit(EXIT_FAILURE);
-    } else if (pid < 0) {
-        perror("fork error");
-        exit(EXIT_FAILURE);
-    } else {
-        /* printf("Reached in Child.\n");*/
-        /* Wait for the child process to finish and get its exit status */
-        waitpid(pid, &status, 0);
-
-        if (WIFEXITED(status))
-        {
-            /* printf("Exited normal\n"); */
-            /* Child process exited normally */
-            /* return WEXITSTATUS(status); */
-            return (status);
-        }
-        else
-        {
-            perror("child process terminated abnormally");
-            return (-1);
-        }
-    }
-    /*return(-1);*/
+void freer(char **argv, char *buff, char *buff_cpy)
+{
+free(argv);
+free(buff);
+free(buff_cpy);
 }

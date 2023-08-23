@@ -1,89 +1,50 @@
-/* #define _GNU_SOURCE
-#include <stdio.h> */
-#include "main2.h"
+#include "main.h"
 
 /**
 * main - Entry Point
-* Return: 0 on success
+* @argc: Argument count
+* @argv: Argument vector
+* Return: 0 on Success
+* ELSE, Failure
 */
 
-int main(int argc, char **argv)
+int main(UNUSED int argc, char **argv)
 {
+char *buff, *buff_cpy, *token = "";
+const char *dlimit = " \t\n";
+int t_count = 0, fd = STDIN_FILENO;
+size_t size = 0;
+ssize_t chars_printed;
+pid_t pid;
 
-    char *buffer, *buffer_copy, *token;
-    const char *delimiter = " \t\n";
-    int token_count = 0, i, fd = STDIN_FILENO, code;
-    size_t size = 0;
-    ssize_t chars_printed;
-
-    (void)argc;
-    /* (void)argv; */
-    
-    while(1)
-    {
-        if (isatty(fd)) {
-            PROMPT;
-        }
-        chars_printed = getline(&buffer, &size, stdin);
-
-        if (chars_printed == 1 && (buffer[0] == '\n' || buffer[0] == '\r'))
-			continue;
-        if (chars_printed == -1) /* || strcmp(&buffer, "exit") == 0) */
-        {
-            /* printf(" Exiting...\n"); Don't forget to remove this! */
-            _putchar('\n');
-            return (0);
-        }
-        if (_strspn(buffer, " \t\n") == _strlen(buffer))
-            continue;
-        /* printf("About to trim %ld\n", chars_printed); */
-
-        trim_lead_space(buffer, chars_printed);
-
-
-        buffer_copy = malloc(sizeof(char) * chars_printed);
-        if (buffer_copy== NULL){
-            perror("tsh: malloc error");
-            return (-1);
-        }
-
-        _strcpy(buffer_copy, buffer);
-        /* printf("Tokenize\n"); Tokenize here */
-        token = strtok(buffer, delimiter);
-        while (token != NULL){
-            token_count++;
-            token = strtok(NULL, delimiter);
-        }
-        
-        token_count++;
-        argv = malloc(sizeof(char *) * token_count);
-
-        token = strtok(buffer_copy, delimiter);
-
-        for (i = 0; token != NULL; i++){
-            argv[i] = malloc(sizeof(char) * _strlen(token));
-            _strcpy(argv[i], token);
-            token = strtok(NULL, delimiter);
-        }
-        argv[i] = NULL;
-        /* printf("Strlen arg: %ld", strlen(argv[0])); */
-        /* for (i = 0; argv[i] != NULL; i++) {  Testing the argument vector (tokens)
-            printf("\n%s", argv[i]);
-        }
-        printf("\n"); */
-        /* printf("%s", buffer); */
-
-        code = child_process(argv);
-
-        if (code >= 0) {
-			/*exit(code);*/
-            /* printf("Reached.\n"); */
-            continue;
-        }
-    }
-    free (argv);
-    free (buffer);
-    free (buffer_copy);
-    
-    return (0);
+while (1)
+{
+if (isatty(fd))
+{
+PROMPT;
+}
+chars_printed = getline(&buff, &size, stdin);
+if (input_edge(chars_printed, buff))
+continue;
+if (chars_printed == -1)
+return (0);
+trim_lead_space(buff, chars_printed);
+buff_cpy = malloc(sizeof(char) * chars_printed);
+if (buff_cpy == NULL)
+{
+perror("tsh: malloc error");
+return (-1);
+}
+_strcpy(buff_cpy, buff);
+count_tok(buff, token, t_count, dlimit);
+argv = malloc(sizeof(char *) * t_count);
+token = strtok(buff_cpy, dlimit);
+tokenize(dlimit, token, argv);
+pid = fork();
+child_process(argv, pid);
+if (chars_printed == -1)
+return (0);
+}
+freer(argv, buff, buff_cpy);
+return (0);
 }
