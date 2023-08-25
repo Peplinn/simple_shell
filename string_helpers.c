@@ -30,7 +30,7 @@ return (dest);
 * Return: The length of the string
 */
 
-size_t _strlen(char *s)
+size_t _strlen(const char *s)
 {
 size_t length = 0;
 while (*s != '\0')
@@ -88,3 +88,28 @@ break;
 }
 return (count);
 }
+
+/**
+* _strcat - Appends string at src to that at dest
+* @dest: Pointer to destination string
+* @src: Pointer to source string
+* Return: dest
+*/
+
+char *_strcat(char *dest, const char *src)
+{
+char *originalDest = dest;
+while (*dest != '\0')
+dest++;
+
+while (*src != '\0')
+{
+*dest = *src;
+dest++;
+src++;
+}
+
+*dest = '\0';
+return (originalDest);
+}
+

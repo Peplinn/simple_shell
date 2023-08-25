@@ -1,54 +1,79 @@
 #include "main.h"
 
 /**
-* child_process - Creates child process
-* @argv: Array containing tokenized string (command)
-* @pid: PID of the process
-* Return: Status
-* ELSE, 0 if FAILURE
-*/
-
-int child_process(char **argv, int pid)
-{
-int status;
-if (pid == 0)
-{
-if (execve(argv[0], argv, NULL) == -1)
-perror("error in new_process: child process");
-return (status);
-}
-else if (pid < 0)
-{
-perror("fork error");
-exit(EXIT_FAILURE);
-}
-else
-{
-waitpid(pid, &status, 0);
-
-if (WIFEXITED(status))
-return (status);
-else
-{
-printf("3.5");
-perror("child process terminated abnormally");
-return (-1);
-}
-}
-return (-1);
-}
-
-/**
-* freer - Frees entities
-* @argv: Token array
-* @buff: String Buffer
-* @buff_cpy: Buffer copy
+* ctrl_d - Handles Ctrl+D
+* @input_length: Length of gotten input
+* @intact_mode: Interactive mode check
 * Return: Nothing
 */
 
-void freer(char **argv, char *buff, char *buff_cpy)
+int ctrl_d(ssize_t input_length, int intact_mode)
 {
-free(argv);
-free(buff);
-free(buff_cpy);
+	if (input_length == -1)
+	{
+		if (intact_mode)
+			write(STDOUT_FILENO, "\n", 1);
+		return (1);
+	}
+	return (0);
 }
+
+/**
+ * unknow_cmd - Handles unknown command error output
+ * @argv: Argument vector
+ * @args: Token array
+ * Return: Error status code
+*/
+
+int unknow_cmd(char **argv, char **args)
+{
+	char *first_args2 = malloc(sizeof(args[0]));
+	const char *first_args1 = first_args2;
+	size_t argv_len = _strlen(argv[0]);
+	size_t args_len = _strlen(args[0]);
+	const char *suffix = ": 1: ";
+	const char *not_found = ": not found\n";
+	size_t err_sze = argv_len + _strlen(suffix) +
+		args_len + _strlen(not_found) + 1;
+	char *msg = "malloc error";
+	char *err_str = (char *) malloc(sizeof(char) * err_sze);
+
+	if (err_str == NULL)
+		perror(msg);
+
+	first_args1 = args[0];
+
+	_strcpy(err_str, argv[0]);
+	_strcat(err_str, suffix);
+	_strcat(err_str, first_args1);
+	_strcat(err_str, not_found);
+
+	write(STDERR_FILENO, err_str, err_sze - 1);
+	free(err_str);
+	free(first_args2);
+	return (127);
+}
+
+/**
+* tok_count - Counts tokens
+* @input: Input Buffer
+* @input_length: Length of gotten input
+* @command: Entered command
+* @args: Token array
+* @delimit: Delimiter string
+* Return: Nothing
+*/
+
+int tok_count(char *input, ssize_t input_length,
+	char *command, char **args, const char *delimit)
+{
+	input[input_length - 1] = '\0';
+	command = input;
+	while (*command == ' ')
+		command++;
+	args[0] = strtok(command, delimit);
+	if (args[0] == NULL)
+		return (1);
+	return (0);
+}
+
