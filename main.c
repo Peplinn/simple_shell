@@ -14,7 +14,7 @@ int main(UNUSED int argc, UNUSED char **argv)
 	const char *delimit = " \t\n";
 	int intact_mode = isatty(STDIN_FILENO), arg_count, status = 0, exit_status;
 	size_t input_size = 0;
-	ssize_t input_length;
+	ssize_t input_length, extenv = ext_env(args);
 
 	while (1)
 	{
@@ -29,6 +29,7 @@ int main(UNUSED int argc, UNUSED char **argv)
 		while ((args[arg_count] = strtok(NULL, delimit)) != NULL)
 			arg_count++;
 		args[arg_count] = NULL;
+		extenv == 1 ? break : continue;
 		child_pid = fork();
 		if (child_pid == -1)
 		{
