@@ -14,7 +14,7 @@ int main(UNUSED int argc, UNUSED char **argv)
 	const char *delimit = " \t\n";
 	int intact_mode = isatty(STDIN_FILENO), arg_count, status = 0, exit_status;
 	size_t input_size = 0;
-	ssize_t input_length, extenv = ext_env(args);
+	ssize_t input_length, extenv;
 
 	while (1)
 	{
@@ -29,25 +29,44 @@ int main(UNUSED int argc, UNUSED char **argv)
 		while ((args[arg_count] = strtok(NULL, delimit)) != NULL)
 			arg_count++;
 		args[arg_count] = NULL;
-		extenv == 1 ? break : continue;
-		child_pid = fork();
-		if (child_pid == -1)
+		extenv = ext_env(args);
+		if (extenv == 1)/* ? break : continue; */
+			break;
+		else if (extenv == 2)
 		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		} else if (child_pid == 0)
-		{
-			execve(args[0], args, NULL);
 			_exit(EXIT_FAILURE);
-		} else
+			continue;
+		}
+		child_pid = fork();
+		if (child_pid != 0 && child_pid != -1)
 		{
 			wait(&status);
 			exit_status = WEXITSTATUS(status);
 			if (exit_status == 1)
 				status = unknow_cmd(argv, args);
-		}
+		} else
+			pid_check(child_pid, args);
 	}
 	free(input);
 	return (status);
 }
 
+/**
+ * pid_check - Checks if pid is 0/-1
+ * @child_pid: Child PID
+ * @args: String of tokens
+ * Return: Nothing
+*/
+
+void pid_check(pid_t child_pid, char **args)
+{
+	if (child_pid == -1)
+	{
+		perror("fork");
+		exit(EXIT_FAILURE);
+	} else if (child_pid == 0)
+	{
+		execve(args[0], args, NULL);
+		_exit(EXIT_FAILURE);
+	}
+}

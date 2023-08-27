@@ -38,7 +38,9 @@ int unknow_cmd(char **argv, char **args)
 	char *msg = "malloc error";
 	char *err_str = (char *) malloc(sizeof(char) * err_sze);
 
-	if (err_str == NULL)
+	if (_strcmp(args[0], "exit") == 0)
+		return (0);
+	else if (err_str == NULL)
 		perror(msg);
 
 	first_args1 = args[0];

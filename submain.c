@@ -38,12 +38,14 @@ void exiter(char **cmd, char *input)
 * Return: Nothing
 */
 
-void print_env()
+void print_env(void)
 {
 	char **env = environ;
 
-	while (*env != NULL) {
+	while (*env != NULL)
+	{
 		size_t len = _strlen(*env);
+
 		write(STDOUT_FILENO, *env, len);
 		write(STDOUT_FILENO, "\n", 1);
 		env++;
@@ -51,7 +53,7 @@ void print_env()
 }
 
 /**
-* extenv - Exit or env
+* ext_env - Exit or env
 * @args: Token array
 * Return: 1 if success
 * ELSE, 0
@@ -61,10 +63,11 @@ int ext_env(char **args)
 {
 	if (_strcmp(args[0], "exit") == 0)
 		return (1);
-	else if (_strcmp(args[0], "env") == 0) {
+	else if (_strcmp(args[0], "env") == 0)
+	{
 		print_env();
-		return (0);
+		return (2);
 	}
-	return;
+	return (0);
 }
 
