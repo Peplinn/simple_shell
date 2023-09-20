@@ -30,7 +30,7 @@ unsigned int check_delim(char c, const char *str);
 void pid_check(pid_t child_pid, char **args);
 void print_env(void);
 int ext_env(char **args);
-	
+
 /* Helper Functions */
 size_t _strlen(const char *s);
 char *_strcpy(char *dest, char *src);
