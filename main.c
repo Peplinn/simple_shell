@@ -13,7 +13,7 @@ int main(UNUSED int argc, UNUSED char **argv)
 	const char *delimit = " \t\n";
 	int intact_mode = isatty(STDIN_FILENO), arg_count, status = 0, exit_status;
 	size_t input_size = 0;
-	ssize_t input_length, extenv, ext_two, child_pid;
+	ssize_t input_length, extenv, child_pid;
 
 	while (1)
 	{
