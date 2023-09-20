@@ -69,3 +69,4 @@ void pid_check(ssize_t child_pid, char **args)
 		_exit(EXIT_FAILURE);
 	}
 }
+
