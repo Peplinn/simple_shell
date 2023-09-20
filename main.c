@@ -9,12 +9,11 @@
 
 int main(UNUSED int argc, UNUSED char **argv)
 {
-	pid_t child_pid;
 	char *input = NULL, *args[MAX_ARGS], *command = NULL;
 	const char *delimit = " \t\n";
 	int intact_mode = isatty(STDIN_FILENO), arg_count, status = 0, exit_status;
 	size_t input_size = 0;
-	ssize_t input_length, extenv;
+	ssize_t input_length, extenv, ext_two, child_pid;
 
 	while (1)
 	{
@@ -34,7 +33,7 @@ int main(UNUSED int argc, UNUSED char **argv)
 			break;
 		else if (extenv == 2)
 		{
-			_exit(EXIT_FAILURE);
+			_exit(EXIT_SUCCESS);
 			continue;
 		}
 		child_pid = fork();
@@ -48,7 +47,8 @@ int main(UNUSED int argc, UNUSED char **argv)
 			pid_check(child_pid, args);
 	}
 	free(input);
-	return ((extenv == 1) ? exit_status : status);
+	ext_two = (extenv == 1) ? exit_status : status;
+	return (ext_two);
 }
 
 /**
@@ -58,7 +58,7 @@ int main(UNUSED int argc, UNUSED char **argv)
  * Return: Nothing
 */
 
-void pid_check(pid_t child_pid, char **args)
+void pid_check(ssize_t child_pid, char **args)
 {
 	if (child_pid == -1)
 	{

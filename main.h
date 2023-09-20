@@ -27,7 +27,7 @@ int tok_count(char *input, ssize_t input_length,
 void exiter(char **cmd, char *input);
 char *_strtok(char *str, const char *delim);
 unsigned int check_delim(char c, const char *str);
-void pid_check(pid_t child_pid, char **args);
+void pid_check(ssize_t child_pid, char **args);
 void print_env(void);
 int ext_env(char **args);
 
