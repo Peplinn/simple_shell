@@ -48,7 +48,7 @@ int main(UNUSED int argc, UNUSED char **argv)
 			pid_check(child_pid, args);
 	}
 	free(input);
-	return (extenv == 1) ? exit_status : status;
+	return ((extenv == 1) ? exit_status : status);
 }
 
 /**
